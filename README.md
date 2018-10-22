@@ -1,6 +1,9 @@
-#Get up and running
+#Backend for BJJ project
+
+##Get up and running
 
 Install Maven: https://maven.apache.org/
+
 
 ## Run server in the command line
 Check the pom.xml for the artifact name and then run:
