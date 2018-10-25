@@ -64,6 +64,17 @@ public class DatabaseConnection {
 
     }
     private static Connection getConnection() throws URISyntaxException, SQLException {
+
+        if (System.getenv("DATABASE_URL") == null) {
+
+            String username = "sa";
+            String password = "";
+            String dbURL = "jdbc:h2:mem:testdb";
+
+            return DriverManager.getConnection(dbURL, username, password);
+
+        }
+
         URI dbUri = new URI(System.getenv("DATABASE_URL"));
 
         String username = dbUri.getUserInfo().split(":")[0];
