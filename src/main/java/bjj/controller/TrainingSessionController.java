@@ -2,7 +2,7 @@ package bjj.controller;
 
 import bjj.database.TrainingSessionRepository;
 import bjj.domain.TrainingSession;
-import bjj.input.TrainingSessionInput;
+import bjj.request.TrainingSessionRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +30,7 @@ public class TrainingSessionController {
     }
 
     @PostMapping("trainingsessions/new")
-    public boolean postNewTrainingSession(@RequestBody TrainingSessionInput trainingSession) {
+    public boolean postNewTrainingSession(@RequestBody TrainingSessionRequest trainingSession) {
         return trainingSessionRepository.insertTrainingSession(trainingSession);
     }
 

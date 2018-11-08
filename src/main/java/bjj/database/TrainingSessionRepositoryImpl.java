@@ -2,11 +2,10 @@ package bjj.database;
 
 import bjj.domain.TrainingSession;
 import bjj.domain.TrainingType;
-import bjj.input.TrainingSessionInput;
+import bjj.request.TrainingSessionRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.net.URISyntaxException;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -23,22 +22,22 @@ public class TrainingSessionRepositoryImpl implements TrainingSessionRepository{
         this.dbConnection = dbConnection;
     }
     @Override
-    public boolean insertTrainingSession(TrainingSessionInput trainingSessionInput) {
+    public boolean insertTrainingSession(TrainingSessionRequest trainingSessionRequest) {
         try {
             Connection connection = dbConnection.getConnection();
             String query = "insert into training_session (id, training_type, training_date, training_length_min)"
                     + "values(?,?,?,?)";
             PreparedStatement s = connection.prepareStatement(query);
             s.setObject(1, UUID.randomUUID());
-            s.setString(2, trainingSessionInput.getTrainingType().toString());
-            s.setDate(3, Date.valueOf(trainingSessionInput.getDate()));
-            s.setInt(4,trainingSessionInput.getLengthMin());
+            s.setString(2, trainingSessionRequest.getTrainingType().toString());
+            s.setDate(3, Date.valueOf(trainingSessionRequest.getDate()));
+            s.setInt(4, trainingSessionRequest.getLengthMin());
 
             int result = s.executeUpdate();
 
             return result > 0;
 
-        } catch (URISyntaxException | SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -63,7 +62,7 @@ public class TrainingSessionRepositoryImpl implements TrainingSessionRepository{
                 resultSet.next();
             }
             return result;
-        } catch (URISyntaxException | SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }

@@ -13,23 +13,36 @@ class DatabaseConnection {
 
     }
 
-    Connection getConnection() throws URISyntaxException, SQLException {
+    Connection getConnection() {
 
         if (System.getenv("DATABASE_URL") == null) {
             String username = "sa";
             String password = "";
             String dbURL = "jdbc:h2:mem:testdb";
 
-            return DriverManager.getConnection(dbURL, username, password);
+            try {
+                return DriverManager.getConnection(dbURL, username, password);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
 
         }
 
-        URI dbUri = new URI(System.getenv("DATABASE_URL"));
+        URI dbUri = null;
+        try {
+            dbUri = new URI(System.getenv("DATABASE_URL"));
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
 
         String username = dbUri.getUserInfo().split(":")[0];
         String password = dbUri.getUserInfo().split(":")[1];
         String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath() + "?sslmode=require";
 
-        return DriverManager.getConnection(dbUrl, username, password);
+        try {
+            return DriverManager.getConnection(dbUrl, username, password);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

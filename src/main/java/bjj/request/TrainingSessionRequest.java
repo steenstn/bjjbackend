@@ -1,15 +1,15 @@
-package bjj.input;
+package bjj.request;
 
 import bjj.domain.TrainingType;
 import java.time.*;
 
-public class TrainingSessionInput {
+public class TrainingSessionRequest {
 
     private final TrainingType trainingType;
     private final LocalDate date;
     private final int lengthMin;
 
-    public TrainingSessionInput(TrainingType trainingType, LocalDate date, int lengthMin) {
+    public TrainingSessionRequest(TrainingType trainingType, LocalDate date, int lengthMin) {
         this.trainingType = trainingType;
         this.date = date;
         this.lengthMin = lengthMin;

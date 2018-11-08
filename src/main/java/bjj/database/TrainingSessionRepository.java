@@ -1,13 +1,13 @@
 package bjj.database;
 
 import bjj.domain.TrainingSession;
-import bjj.input.TrainingSessionInput;
+import bjj.request.TrainingSessionRequest;
 
 import java.util.List;
 
 public interface TrainingSessionRepository {
 
-    boolean insertTrainingSession(TrainingSessionInput trainingSessionInput);
+    boolean insertTrainingSession(TrainingSessionRequest trainingSessionRequest);
     List<TrainingSession> getAllTrainingSessions();
 
 }
