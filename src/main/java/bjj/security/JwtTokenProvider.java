@@ -28,7 +28,8 @@ public class JwtTokenProvider {
     public void initSecretKey() {
         String envKey = System.getenv("SECRET_KEY");
         if(envKey == null) {
-            throw new RuntimeException("No secret key found in environment.");
+            System.out.println("** No environment variable for secret key found, using default value **");
+            envKey = "notsecretatall";
         }
         secretKey = Base64.getEncoder().encodeToString(envKey.getBytes());
 

@@ -1,6 +1,5 @@
 package bjj.database;
 
-import bjj.domain.Role;
 import bjj.domain.User;
 import bjj.request.UserRegistrationRequest;
 import bjj.security.JwtTokenProvider;
@@ -9,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.UUID;
 
 @Component
@@ -26,14 +23,14 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User registerUser(UserRegistrationRequest user) {
+    public User registerUser(String username, String password) {
         try {
             Connection connection = dbConnection.getConnection();
             String query = "insert into users (id, username, password)"
                     + "values(?,?,?)";
-            String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+            String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
-            User dbUser = new User(UUID.randomUUID(), user.getUsername().toLowerCase(), hashedPassword);
+            User dbUser = new User(UUID.randomUUID(), username.toLowerCase(), hashedPassword);
 
             PreparedStatement s = connection.prepareStatement(query);
             s.setObject(1, dbUser.getId());
@@ -48,33 +45,6 @@ public class UserRepositoryImpl implements UserRepository {
                 throw new RuntimeException("Could not register user");
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public String login(UserRegistrationRequest user) {
-        try {
-
-            Connection connection = dbConnection.getConnection();
-
-            String query = "select * from users where username = ?";
-            PreparedStatement s = connection.prepareStatement(query);
-            s.setString(1, user.getUsername().toLowerCase());
-            ResultSet resultSet = s.executeQuery();
-
-            if(resultSet.next()) {
-                String dbPassword = resultSet.getString("password");
-                if(BCrypt.checkpw(user.getPassword(), dbPassword)) {
-                    return jwtTokenProvider.createToken(user.getUsername(), new ArrayList<>(Collections.singleton(Role.ROLE_USER)));
-                } else {
-                    return "Unsuccessful login";
-                }
-            }
-
-            return "No user found";
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -104,8 +74,11 @@ public class UserRepositoryImpl implements UserRepository {
         try {
             Connection connection = dbConnection.getConnection();
 
-            Statement s = connection.createStatement();
-            ResultSet resultSet = s.executeQuery("select * from users where username='" + username.toLowerCase()+"'");
+            String query = "select * from users where username = ?";
+            PreparedStatement s = connection.prepareStatement(query);
+
+            s.setString(1, username.toLowerCase());
+            ResultSet resultSet = s.executeQuery();
 
             if(resultSet.next()) {
                 UUID id = UUID.fromString(resultSet.getString("id"));
