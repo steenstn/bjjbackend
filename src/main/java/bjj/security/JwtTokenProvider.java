@@ -81,6 +81,13 @@ public class JwtTokenProvider {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
+    public String getUsernameFromAuthHeader(String header) {
+        if (header != null && header.startsWith("Bearer ")) {
+            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(header.substring(7)).getBody().getSubject();
+        }
+        throw new RuntimeException("Invalid auth header");
+    }
+
     public boolean validateToken(String token) {
         try {
             Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);

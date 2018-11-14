@@ -10,7 +10,6 @@ import java.sql.*;
 class DatabaseConnection {
 
     DatabaseConnection() {
-
     }
 
     Connection getConnection() {
