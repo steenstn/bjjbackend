@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.web.cors.CorsConfiguration;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -16,6 +17,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
 
         // Disable CSRF (cross site request forgery)
         http.csrf().disable();

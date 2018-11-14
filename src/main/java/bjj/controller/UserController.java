@@ -3,6 +3,7 @@ package bjj.controller;
 import bjj.database.UserRepository;
 import bjj.domain.User;
 import bjj.request.UserRegistrationRequest;
+import bjj.response.TokenResponse;
 import bjj.response.UserRegistrationResponse;
 import bjj.service.UserService;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,8 @@ public class UserController {
     }
 
     @PostMapping("user/login")
-    public String login(@RequestBody UserRegistrationRequest user) {
-        return userService.login(user.getUsername(), user.getPassword());
+    public TokenResponse login(@RequestBody UserRegistrationRequest user) {
+        String token = userService.login(user.getUsername(), user.getPassword());
+        return new TokenResponse(token);
     }
 }
