@@ -17,7 +17,7 @@ class DatabaseConnection {
         if (System.getenv("DATABASE_URL") == null) {
             String username = "sa";
             String password = "";
-            String dbURL = "jdbc:h2:mem:testdb";
+            String dbURL = "jdbc:h2:~/test";
 
             try {
                 return DriverManager.getConnection(dbURL, username, password);
