@@ -22,3 +22,8 @@ If you want to connect to a specific database, you need to add the `DATABASE_URL
 Check the pom.xml for the artifact name and then run:
 `mvn install && java -jar target/bjjtraining-x.x-SNAPSHOT.jar` (replace x.x-SNAPSHOT for the name in pom.xml)
 
+## Access the local H2-database and create the tables
+- Go to localhost:8080/h2-console
+- Change the JDBC URL to `jdbc:h2:mem:testdb`
+- Connect
+- Run the scripts in the resources/initialization_data.sql file
