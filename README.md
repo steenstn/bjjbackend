@@ -21,3 +21,4 @@ If you want to connect to a specific database, you need to add the `DATABASE_URL
 ## Run server in the command line
 Check the pom.xml for the artifact name and then run:
 `mvn install && java -jar target/bjjtraining-x.x-SNAPSHOT.jar` (replace x.x-SNAPSHOT for the name in pom.xml)
+
