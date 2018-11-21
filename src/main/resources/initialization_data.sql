@@ -17,3 +17,12 @@ CREATE TABLE users
     password text NOT NULL,
     CONSTRAINT user_pkey PRIMARY KEY (id)
 );
+
+CREATE TABLE moves
+(
+    id uuid NOT NULL,
+    name text NOT NULL,
+    description text ,
+    user_id uuid NOT NULL,
+    CONSTRAINT moves_pkey PRIMARY KEY (id)
+);
