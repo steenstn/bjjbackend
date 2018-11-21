@@ -8,8 +8,11 @@ import bjj.request.TrainingSessionRequest;
 import bjj.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.jws.soap.SOAPBinding;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin
@@ -22,6 +25,7 @@ public class TrainingSessionController {
 
     @Autowired
     private UserRepository userRepository;
+
 
     public TrainingSessionController(JwtTokenProvider jwtTokenProvider,
                                      TrainingSessionRepository trainingSessionRepository,
@@ -47,6 +51,14 @@ public class TrainingSessionController {
     public boolean postNewTrainingSession(@RequestBody TrainingSessionRequest trainingSession, @RequestHeader("Authorization") String auth) {
         User user = userRepository.getUser(jwtTokenProvider.getUsernameFromAuthHeader(auth));
         return trainingSessionRepository.insertTrainingSession(trainingSession, user);
+    }
+
+    @PostMapping("trainingsessions/{id}")
+    public boolean editTrainingSession (@RequestBody TrainingSessionRequest trainingSession, @RequestHeader("Authorization") String auth
+    ,@PathVariable String id) {
+        User user = userRepository.getUser((jwtTokenProvider.getUsernameFromAuthHeader(auth)));
+        return trainingSessionRepository.editTrainingSession(trainingSession, user, UUID.fromString(id));
+
     }
 
 }

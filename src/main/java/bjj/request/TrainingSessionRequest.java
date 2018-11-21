@@ -9,7 +9,7 @@ public class TrainingSessionRequest {
     private final LocalDate date;
     private final int lengthMin;
 
-    public TrainingSessionRequest(TrainingType trainingType, LocalDate date, int lengthMin) {
+    public TrainingSessionRequest(TrainingType trainingType, LocalDate date, int lengthMin, Object id) {
         this.trainingType = trainingType;
         this.date = date;
         this.lengthMin = lengthMin;
