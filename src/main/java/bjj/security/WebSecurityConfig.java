@@ -31,7 +31,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/register").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/test").permitAll()
-                // Disallow everything else..
+
+                
                 .anyRequest().authenticated();
         http.headers().frameOptions().disable();
         // If a user try to access a resource without having enough permissions

@@ -6,6 +6,8 @@ import bjj.domain.User;
 import bjj.request.TrainingSessionRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -58,24 +60,37 @@ public class TrainingSessionRepositoryImpl implements TrainingSessionRepository{
         }
     }
 
-    @Override
-    public List<TrainingSession> getAllTrainingSessions() {
-        try (Connection connection = dbConnection.getConnection(); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery("select * from training_session")) {
+    public boolean editTrainingSession(TrainingSessionRequest trainingSessionRequest, UUID id) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = dbConnection.getConnection();
+            String query = "update training_session set training_type = ?, training_date = ?, training_length_min = ?" +
+                    "WHERE id = ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, trainingSessionRequest.getTrainingType().toString().toUpperCase());
+            preparedStatement.setDate(2, Date.valueOf(trainingSessionRequest.getDate()));
+            preparedStatement.setInt(3, trainingSessionRequest.getLengthMin());
+            preparedStatement.setObject(4,id);
 
-            resultSet.next();
-            List<TrainingSession> result = new ArrayList<>();
-            while (!resultSet.isAfterLast()) {
-                UUID id = UUID.fromString(resultSet.getString("id"));
-                TrainingType type = TrainingType.valueOf(resultSet.getString("training_type").toUpperCase());
-                LocalDate date = resultSet.getDate("training_date").toLocalDate();
-                int length = resultSet.getInt("training_length_min");
-                result.add(new TrainingSession(id, type, date, length));
-                resultSet.next();
-            }
-            return result;
+            int result = preparedStatement.executeUpdate();
+
+            return result > 0;
+
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) { /* ignored */}
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) { /* ignored */}
+            }
         }
     }
 
