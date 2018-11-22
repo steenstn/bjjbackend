@@ -11,5 +11,5 @@ public interface TrainingSessionRepository {
 
     boolean insertTrainingSession(TrainingSessionRequest trainingSessionRequest, User user);
     List<TrainingSession> getTrainingSessionsForUser(User user);
-    boolean editTrainingSession(TrainingSessionRequest trainingSessionRequest, User user, UUID id);
+    boolean editTrainingSession(TrainingSessionRequest trainingSessionRequest, UUID id);
 }

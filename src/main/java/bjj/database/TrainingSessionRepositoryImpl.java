@@ -60,7 +60,7 @@ public class TrainingSessionRepositoryImpl implements TrainingSessionRepository{
         }
     }
 
-    public boolean editTrainingSession(TrainingSessionRequest trainingSessionRequest, User user, UUID id) {
+    public boolean editTrainingSession(TrainingSessionRequest trainingSessionRequest, UUID id) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -68,14 +68,12 @@ public class TrainingSessionRepositoryImpl implements TrainingSessionRepository{
             String query = "update training_session set training_type = ?, training_date = ?, training_length_min = ?" +
                     "WHERE id = ?";
             preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, trainingSessionRequest.getTrainingType().toString());
+            preparedStatement.setString(1, trainingSessionRequest.getTrainingType().toString().toUpperCase());
             preparedStatement.setDate(2, Date.valueOf(trainingSessionRequest.getDate()));
             preparedStatement.setInt(3, trainingSessionRequest.getLengthMin());
             preparedStatement.setObject(4,id);
-            System.out.println(getTrainingSessionsForUser(user).get(0).toString());
 
             int result = preparedStatement.executeUpdate();
-            System.out.println("RESULT: " + result);
 
             return result > 0;
 

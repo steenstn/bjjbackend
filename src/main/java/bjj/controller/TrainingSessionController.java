@@ -53,11 +53,9 @@ public class TrainingSessionController {
         return trainingSessionRepository.insertTrainingSession(trainingSession, user);
     }
 
-    @PostMapping("trainingsessions/{id}")
-    public boolean editTrainingSession (@RequestBody TrainingSessionRequest trainingSession, @RequestHeader("Authorization") String auth
-    ,@PathVariable String id) {
-        User user = userRepository.getUser((jwtTokenProvider.getUsernameFromAuthHeader(auth)));
-        return trainingSessionRepository.editTrainingSession(trainingSession, user, UUID.fromString(id));
+    @PutMapping("trainingsessions/{id}")
+    public boolean editTrainingSession (@RequestBody TrainingSessionRequest trainingSession, @PathVariable String id) {
+        return trainingSessionRepository.editTrainingSession(trainingSession, UUID.fromString(id));
 
     }
 
