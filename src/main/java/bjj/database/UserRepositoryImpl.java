@@ -1,13 +1,10 @@
 package bjj.database;
 
 import bjj.domain.User;
-import bjj.request.UserRegistrationRequest;
-import bjj.security.JwtTokenProvider;
-import org.mindrot.jbcrypt.BCrypt;
+import bjj.security.EncryptionWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.xml.transform.Result;
 import java.sql.*;
 import java.util.UUID;
 
@@ -15,12 +12,11 @@ import java.util.UUID;
 public class UserRepositoryImpl implements UserRepository {
     @Autowired
     private DatabaseConnection dbConnection;
+    private EncryptionWrapper encryptionWrapper;
 
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-
-    public UserRepositoryImpl(DatabaseConnection dbConnection) {
+    public UserRepositoryImpl(DatabaseConnection dbConnection, EncryptionWrapper encryptionWrapper) {
         this.dbConnection = dbConnection;
+        this.encryptionWrapper = encryptionWrapper;
     }
 
     @Override
@@ -31,7 +27,7 @@ public class UserRepositoryImpl implements UserRepository {
             connection = dbConnection.getConnection();
             String query = "insert into users (id, username, password)"
                     + "values(?,?,?)";
-            String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+            String hashedPassword = encryptionWrapper.hashPassword(password);
 
             User dbUser = new User(UUID.randomUUID(), username.toLowerCase(), hashedPassword);
 

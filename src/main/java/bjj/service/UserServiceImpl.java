@@ -3,8 +3,8 @@ package bjj.service;
 import bjj.database.UserRepository;
 import bjj.domain.Role;
 import bjj.domain.User;
+import bjj.security.EncryptionWrapper;
 import bjj.security.JwtTokenProvider;
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -15,10 +15,13 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
     private JwtTokenProvider jwtTokenProvider;
+    private EncryptionWrapper encryptionWrapper;
 
-    public UserServiceImpl(UserRepository userRepository, JwtTokenProvider jwtTokenProvider) {
+    public UserServiceImpl(UserRepository userRepository, JwtTokenProvider jwtTokenProvider,
+                           EncryptionWrapper encryptionWrapper) {
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.encryptionWrapper = encryptionWrapper;
     }
 
     @Override
@@ -32,7 +35,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String login(String username, String password) {
         User dbUser = userRepository.getUser(username);
-        if(BCrypt.checkpw(password, dbUser.getPassword())) {
+        if(encryptionWrapper.checkPassword(password, dbUser.getPassword())) {
             return jwtTokenProvider.createToken(dbUser.getUsername(), new ArrayList<>(Collections.singleton(Role.ROLE_USER)));
         } else {
             throw new RuntimeException("Unsuccessful login");
