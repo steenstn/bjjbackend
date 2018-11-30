@@ -95,6 +95,38 @@ public class TrainingSessionRepositoryImpl implements TrainingSessionRepository{
     }
 
     @Override
+    public boolean deleteTrainingSession(UUID id, User user) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = dbConnection.getConnection();
+            String query = "delete from training_session where id = ? and user_id = ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setObject(1, id);
+            preparedStatement.setObject(2, user.getId());
+
+
+            int result = preparedStatement.executeUpdate();
+            return result > 0;
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) { /* ignored */}
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) { /* ignored */}
+            }
+        }
+    }
+
+    @Override
     public List<TrainingSession> getTrainingSessionsForUser(User user) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;

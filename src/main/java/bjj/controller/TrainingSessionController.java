@@ -56,7 +56,11 @@ public class TrainingSessionController {
     @PutMapping("trainingsessions/{id}")
     public boolean editTrainingSession (@RequestBody TrainingSessionRequest trainingSession, @PathVariable String id) {
         return trainingSessionRepository.editTrainingSession(trainingSession, UUID.fromString(id));
-
     }
 
+    @DeleteMapping("trainingsessions/{id}")
+    public boolean deleteTrainingSession(@PathVariable String id, @RequestHeader("Authorization") String auth) {
+        User user = userRepository.getUser(jwtTokenProvider.getUsernameFromAuthHeader(auth));
+        return trainingSessionRepository.deleteTrainingSession(UUID.fromString(id), user);
+    }
 }
