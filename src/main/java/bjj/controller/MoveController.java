@@ -6,10 +6,9 @@ import bjj.domain.Move;
 import bjj.domain.User;
 import bjj.request.MoveRequest;
 import bjj.security.JwtTokenProvider;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class MoveController {
@@ -29,5 +28,11 @@ public class MoveController {
     public Move postNewMove(@RequestBody MoveRequest move, @RequestHeader("Authorization") String auth) {
         User user = userRepository.getUser(jwtTokenProvider.getUsernameFromAuthHeader(auth));
         return moveRepository.insertMove(move, user);
+    }
+
+    @GetMapping("/moves")
+    public List<Move> getMoves(@RequestHeader("Authorization") String auth) {
+        User user = userRepository.getUser(jwtTokenProvider.getUsernameFromAuthHeader(auth));
+        return moveRepository.getMovesForUser(user);
     }
 }

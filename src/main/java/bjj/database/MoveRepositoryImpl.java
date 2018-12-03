@@ -7,7 +7,10 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -45,6 +48,53 @@ public class MoveRepositoryImpl implements MoveRepository {
             e.printStackTrace();
             throw new RuntimeException(e);
         } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) { /* ignored */}
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) { /* ignored */}
+            }
+        }
+    }
+
+    @Override
+    public List<Move> getMovesForUser(User user) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = dbConnection.getConnection();
+            String query = "select * from moves where user_id = ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setObject(1, user.getId());
+            resultSet = preparedStatement.executeQuery();
+
+            if(!resultSet.isBeforeFirst()) {
+                return new ArrayList<>();
+            }
+            List<Move> result = new ArrayList<>();
+            while (!resultSet.isAfterLast()) {
+                UUID id = UUID.fromString(resultSet.getString("id"));
+                String name= resultSet.getString("name");
+                String description= resultSet.getString("description");
+                result.add(new Move(id, name, description));
+                resultSet.next();
+            }
+            return result;
+        } catch(SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } finally {
+            if(resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                }
+            }
             if (preparedStatement != null) {
                 try {
                     preparedStatement.close();
