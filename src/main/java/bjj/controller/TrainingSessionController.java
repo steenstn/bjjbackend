@@ -48,7 +48,7 @@ public class TrainingSessionController {
     }
 
     @PostMapping("trainingsessions/new")
-    public boolean postNewTrainingSession(@RequestBody TrainingSessionRequest trainingSession, @RequestHeader("Authorization") String auth) {
+    public TrainingSession postNewTrainingSession(@RequestBody TrainingSessionRequest trainingSession, @RequestHeader("Authorization") String auth) {
         User user = userRepository.getUser(jwtTokenProvider.getUsernameFromAuthHeader(auth));
         return trainingSessionRepository.insertTrainingSession(trainingSession, user);
     }

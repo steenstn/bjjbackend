@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface TrainingSessionRepository {
 
-    boolean insertTrainingSession(TrainingSessionRequest trainingSessionRequest, User user);
+    TrainingSession insertTrainingSession(TrainingSessionRequest trainingSessionRequest, User user);
     List<TrainingSession> getTrainingSessionsForUser(User user);
     boolean editTrainingSession(TrainingSessionRequest trainingSessionRequest, UUID id);
     boolean deleteTrainingSession(UUID id, User user);

@@ -25,23 +25,26 @@ public class TrainingSessionRepositoryImpl implements TrainingSessionRepository{
         this.dbConnection = dbConnection;
     }
     @Override
-    public boolean insertTrainingSession(TrainingSessionRequest trainingSessionRequest, User user) {
+    public TrainingSession insertTrainingSession(TrainingSessionRequest trainingSessionRequest, User user) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
+            TrainingSession resultingTrainingSession = new TrainingSession(UUID.randomUUID(),
+                    trainingSessionRequest.getTrainingType(), trainingSessionRequest.getDate(), trainingSessionRequest.getLengthMin());
+
             connection = dbConnection.getConnection();
             String query = "insert into training_session (id, user_id, training_type, training_date, training_length_min)"
                     + "values(?,?,?,?,?)";
             preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setObject(1, UUID.randomUUID());
+            preparedStatement.setObject(1, resultingTrainingSession.getId());
             preparedStatement.setObject(2, user.getId());
-            preparedStatement.setString(3, trainingSessionRequest.getTrainingType().toString());
-            preparedStatement.setDate(4, Date.valueOf(trainingSessionRequest.getDate()));
-            preparedStatement.setInt(5, trainingSessionRequest.getLengthMin());
+            preparedStatement.setString(3, resultingTrainingSession.getTrainingType().toString());
+            preparedStatement.setDate(4, Date.valueOf(resultingTrainingSession.getDate()));
+            preparedStatement.setInt(5, resultingTrainingSession.getLengthMin());
 
             int result = preparedStatement.executeUpdate();
 
-            return result > 0;
+            return resultingTrainingSession;
 
         } catch (SQLException e) {
             e.printStackTrace();
