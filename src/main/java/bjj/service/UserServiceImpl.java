@@ -41,4 +41,9 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Unsuccessful login");
         }
     }
+
+    @Override
+    public User getAuthenticatedUser(String authHeader) {
+        return userRepository.getUser(jwtTokenProvider.getUsernameFromAuthHeader(authHeader));
+    }
 }

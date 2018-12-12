@@ -1,6 +1,5 @@
 package bjj.controller;
 
-import bjj.database.UserRepository;
 import bjj.domain.User;
 import bjj.request.UserRegistrationRequest;
 import bjj.response.TokenResponse;
@@ -14,7 +13,7 @@ public class UserController {
 
     private UserService userService;
 
-    public UserController(UserRepository userRepository, UserService userService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 

@@ -6,11 +6,9 @@ import bjj.domain.TrainingSession;
 import bjj.domain.User;
 import bjj.request.TrainingSessionRequest;
 import bjj.security.JwtTokenProvider;
-import org.springframework.beans.factory.annotation.Autowired;
+import bjj.service.UserService;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
-import javax.jws.soap.SOAPBinding;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,21 +16,13 @@ import java.util.UUID;
 @CrossOrigin
 public class TrainingSessionController {
 
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-    @Autowired
     private TrainingSessionRepository trainingSessionRepository;
+    private UserService userService;
 
-    @Autowired
-    private UserRepository userRepository;
-
-
-    public TrainingSessionController(JwtTokenProvider jwtTokenProvider,
-                                     TrainingSessionRepository trainingSessionRepository,
-                                     UserRepository userRepository) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    public TrainingSessionController(TrainingSessionRepository trainingSessionRepository,
+                                     UserService userService) {
+        this.userService = userService;
         this.trainingSessionRepository = trainingSessionRepository;
-        this.userRepository = userRepository;
     }
 
     @RequestMapping("/test")
@@ -42,14 +32,14 @@ public class TrainingSessionController {
 
     @GetMapping("/trainingsessions")
     public List<TrainingSession> getTrainingSessions(@RequestHeader("Authorization") String auth) {
-        User user = userRepository.getUser(jwtTokenProvider.getUsernameFromAuthHeader(auth));
+        User user = userService.getAuthenticatedUser(auth);
         return trainingSessionRepository.getTrainingSessionsForUser(user);
 
     }
 
     @PostMapping("trainingsessions/new")
     public TrainingSession postNewTrainingSession(@RequestBody TrainingSessionRequest trainingSession, @RequestHeader("Authorization") String auth) {
-        User user = userRepository.getUser(jwtTokenProvider.getUsernameFromAuthHeader(auth));
+        User user = userService.getAuthenticatedUser(auth);
         return trainingSessionRepository.insertTrainingSession(trainingSession, user);
     }
 
@@ -60,7 +50,7 @@ public class TrainingSessionController {
 
     @PostMapping("trainingsessions/{id}/delete")
     public boolean deleteTrainingSession(@PathVariable String id, @RequestHeader("Authorization") String auth) {
-        User user = userRepository.getUser(jwtTokenProvider.getUsernameFromAuthHeader(auth));
+        User user = userService.getAuthenticatedUser(auth);
         return trainingSessionRepository.deleteTrainingSession(UUID.fromString(id), user);
     }
 }
