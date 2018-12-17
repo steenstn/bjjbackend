@@ -76,6 +76,7 @@ public class MoveRepositoryImpl implements MoveRepository {
             if(!resultSet.isBeforeFirst()) {
                 return new ArrayList<>();
             }
+            resultSet.next();
             List<Move> result = new ArrayList<>();
             while (!resultSet.isAfterLast()) {
                 UUID id = UUID.fromString(resultSet.getString("id"));
