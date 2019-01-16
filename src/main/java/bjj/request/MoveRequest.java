@@ -7,7 +7,7 @@ public class MoveRequest {
     private final String name;
     private final String description;
 
-    public MoveRequest(UUID id, String name, String description, UUID userId) {
+    public MoveRequest(String name, String description) {
         this.name = name;
         this.description = description;
     }

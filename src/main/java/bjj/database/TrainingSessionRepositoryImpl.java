@@ -140,7 +140,10 @@ public class TrainingSessionRepositoryImpl implements TrainingSessionRepository{
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setObject(1, user.getId());
             resultSet = preparedStatement.executeQuery();
-            resultSet.next();
+
+            if(!resultSet.next()) {
+                return new ArrayList<>();
+            }
             List<TrainingSession> result = new ArrayList<>();
             while (!resultSet.isAfterLast()) {
                 UUID id = UUID.fromString(resultSet.getString("id"));
