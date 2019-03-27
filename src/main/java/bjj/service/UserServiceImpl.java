@@ -26,10 +26,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User registerUser(String username, String password) {
+
         if(userRepository.userExists(username)) {
             throw new RuntimeException("User with username '" + username + "' already exists");
         }
-        return userRepository.registerUser(username, password);
+        return userRepository.createUser(username, password);
     }
 
     @Override

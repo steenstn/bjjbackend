@@ -1,5 +1,6 @@
 package bjj.database;
 
+import bjj.domain.Move;
 import bjj.domain.User;
 import bjj.security.EncryptionWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User registerUser(String username, String password) {
+    public User createUser(String username, String password) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -75,6 +76,7 @@ public class UserRepositoryImpl implements UserRepository {
         String query = "select * from users where username = ?";
         preparedStatement = connection.prepareStatement(query);
         preparedStatement.setString(1, username.toLowerCase());
+
 
         ResultSet resultSet = preparedStatement.executeQuery();
         return resultSet.next();

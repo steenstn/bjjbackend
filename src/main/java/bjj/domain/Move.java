@@ -21,6 +21,7 @@ public class Move {
         return name;
     }
 
+
     public String getDescription() {
         return description;
     }
